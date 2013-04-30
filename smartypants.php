@@ -34,96 +34,33 @@ define( 'SMARTYPANTS_TAGS_TO_SKIP', 'pre|code|kbd|script|style|math');
 
 define( 'SMARTYPANTS_PARSER_CLASS', 'SmartyPants_Parser' );
 
-function SmartyPants($text, $attr = SMARTYPANTS_ATTR) {
-#
-# Initialize the parser and return the result of its transform method.
-#
-	# Setup static parser array.
-	static $parser = array();
-	if (!isset($parser[$attr])) {
-		$parser_class = SMARTYPANTS_PARSER_CLASS;
-		$parser[$attr] = new $parser_class($attr);
-	}
-
-	# Transform text using parser.
-	return $parser[$attr]->transform($text);
-}
-
-function SmartQuotes($text, $attr = null) {
-	switch ($attr) {
-		case 0:  return $text;
-		case 2:  $attr = 'qb'; break;
-		default: $attr = 'q'; break;
-	}
-	return SmartyPants($text, $attr);
-}
-
-function SmartDashes($text, $attr = null) {
-	switch ($attr) {
-		case 0:  return $text;
-		case 2:  $attr = 'D'; break;
-		case 3:  $attr = 'i'; break;
-		default: $attr = 'd'; break;
-	}
-	return SmartyPants($text, $attr);
-}
-
-function SmartElipsis($text, $attr = null) {
-	switch ($attr) {
-		case 0:  return $text;
-		default: $attr = 'e'; break;
-	}
-	return SmartyPants($text, $attr);
-}
-
-
-### WordPress Plugin Interface ###
-
-/*
-Plugin Name: SmartyPants
-Plugin URI: http://michelf.ca/projects/php-smartypants/
-Description: SmartyPants is a web publishing utility that translates plain ASCII punctuation characters into &#8220;smart&#8221; typographic punctuation HTML entities. This plugin <strong>replace the default WordPress Texturize algorithm</strong> for the content and the title of your posts, the comments body and author name, and everywhere else Texturize normally apply. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>.
-Version: 1.5.1f
-Author: Michel Fortin
-Author URI: http://michelf.ca/
-*/
-
-if (isset($wp_version)) {
-	# Remove default Texturize filter that would conflict with SmartyPants.
-	remove_filter('category_description', 'wptexturize');
-	remove_filter('list_cats', 'wptexturize');
-	remove_filter('comment_author', 'wptexturize');
-	remove_filter('comment_text', 'wptexturize');
-	remove_filter('single_post_title', 'wptexturize');
-	remove_filter('the_title', 'wptexturize');
-	remove_filter('the_content', 'wptexturize');
-	remove_filter('the_excerpt', 'wptexturize');
-	remove_filter('the_tags', 'wptexturize');
-	# Add SmartyPants filter.
-	add_filter('category_description', 'SmartyPants', 11);
-	add_filter('list_cats', 'SmartyPants', 11);
-	add_filter('comment_author', 'SmartyPants', 11);
-	add_filter('comment_text', 'SmartyPants', 11);
-	add_filter('single_post_title', 'SmartyPants', 11);
-	add_filter('the_title', 'SmartyPants', 11);
-	add_filter('the_content', 'SmartyPants', 11);
-	add_filter('the_excerpt', 'SmartyPants', 11);
-	add_filter('the_tags', 'SmartyPants', 11);
-}
-
-
-### Smarty Modifier Interface ###
-
-function smarty_modifier_smartypants($text, $attr = NULL) {
-	return SmartyPants($text, $attr);
-}
-
-
 #
 # SmartyPants Parser
 #
 
-class SmartyPants_Parser {
+class SmartyPants {
+
+	### Simple Function Interface ###
+
+	public static function defaultTransform($text) {
+	#
+	# Initialize the parser and return the result of its transform method.
+	# This will work fine for derived classes too.
+	#
+		# Take parser class on which this function was called.
+		$parser_class = \get_called_class();
+
+		# try to take parser from the static parser list
+		static $parser_list;
+		$parser =& $parser_list[$parser_class];
+
+		# create the parser it not already set
+		if (!$parser)
+			$parser = new $parser_class;
+
+		# Transform text using parser.
+		return $parser->transform($text);
+	}
 
 	# Options to specify which transformations to make:
 	var $do_nothing   = 0;
@@ -134,7 +71,7 @@ class SmartyPants_Parser {
 	var $do_stupefy   = 0;
 	var $convert_quot = 0; # should we translate &quot; entities into normal quotes?
 
-	function SmartyPants_Parser($attr = SMARTYPANTS_ATTR) {
+	function __construct($attr = SMARTYPANTS_ATTR) {
 	#
 	# Initialize a SmartyPants_Parser with certain attributes.
 	#
@@ -760,4 +697,3 @@ arising in any way out of the use of this software, even if advised of the
 possibility of such damage.
 
 */
-?>

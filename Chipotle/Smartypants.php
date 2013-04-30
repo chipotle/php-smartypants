@@ -1,5 +1,5 @@
-<?php
-#
+<?php namespace Chipotle;
+
 # SmartyPants  -  Smart punctuation for web sites
 #
 # PHP SmartyPants  

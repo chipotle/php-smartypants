@@ -1,5 +1,5 @@
 {
-    "name": "chipotle/smartypants",
+    "name": "chipotle/php-smartypants",
     "type": "library",
     "description": "Packaging of Michel Fortin's PHP SmartyPants",
     "license": "BSD-3-Clause",

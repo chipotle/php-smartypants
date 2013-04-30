@@ -1,0 +1,32 @@
+{
+    "name": "chipotle/smartypants",
+    "type": "library",
+    "description": "Packaging of Michel Fortin's PHP SmartyPants",
+    "license": "BSD-3-Clause",
+    "homepage": "https://github.com/chipotle/php-smartypants",
+    "keywords": ["smartypants"],
+    "authors": [
+        {
+            "name": "Michel Fortin",
+            "email": "michel.fortin@michelf.ca",
+            "homepage": "http://michelf.ca/",
+            "role": "developer"
+        },
+        {
+            "name": "Watts Martin",
+            "email": "layotl@gmail.com",
+            "homepage": "http://ranea.org",
+            "role": "packager"
+        },
+        {
+            "name": "John Gruber",
+            "homepage": "http://daringfireball.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-0": { "Chipotle": "" }
+    }
+}
